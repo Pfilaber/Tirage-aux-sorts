@@ -60,53 +60,56 @@
   </div>
 
   <script>
-    let pays = [];
+  let pays = [];
 
-    // Charger les données JSON
-    fetch("full_birth_data_2023_fr.json")
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Fichier introuvable");
+  // Load data on page load
+  fetch("full_birth_data_2023_fr.json")
+    .then(response => {
+      if (!response.ok) throw new Error("Network error");
+      return response.json();
+    })
+    .then(data => {
+      pays = data;
+      console.log("Data loaded:", pays);
+    })
+    .catch(error => {
+      document.getElementById("result").innerHTML = "Erreur : " + error.message;
+    });
+
+  // This function must be global for the button to find it
+  function simulateLottery() {
+    if (!pays.length) {
+      document.getElementById("result").innerHTML = "Les données ne sont pas encore chargées. Réessayez dans un instant.";
+      return;
     }
-    return response.json();
-  })
-  .then(data => {
-    pays = data;
-    console.log("Données chargées :", pays);
-  })
-  .catch(error => {
-    document.getElementById("result").innerHTML = "Erreur : " + error.message;
-  });
 
+    let totalBirths = pays.reduce((sum, c) => sum + c.births, 0);
+    let rand = Math.random() * totalBirths;
+    let cumulative = 0;
+    let selected;
 
-    function simulateLottery() {
-      if (pays.length === 0) {
-        document.getElementById("result").innerHTML = "Les données ne sont pas encore chargées. Réessayez dans un instant.";
-        return;
-      }
-
-      const totalNaissances = pays.reduce((sum, p) => sum + p.births, 0);
-      const rand = Math.random() * totalNaissances;
-      let cumul = 0;
-      let choisi = null;
-
-      for (let i = 0; i < pays.length; i++) {
-        cumul += pays[i].births;
-        if (rand < cumul) {
-          choisi = pays[i];
-          break;
-        }
-      }
-
-      if (choisi) {
-        document.getElementById("result").innerHTML = `
-          <h2>🎉 Vous seriez né en <strong>${choisi.name}</strong> !</h2>
-          <p>(Nombre estimé de naissances en 2023 : ${choisi.births.toLocaleString('fr-FR')})</p>
-        `;
-      } else {
-        document.getElementById("result").innerHTML = "Une erreur est survenue.";
+    for (let country of pays) {
+      cumulative += country.births;
+      if (rand < cumulative) {
+        selected = country;
+        break;
       }
     }
-  </script>
+
+    document.getElementById("result").innerHTML = `
+      <h2>🎉 Vous êtes né(e) en <strong>${selected.name}</strong> !</h2>
+      <ul>
+        <li><strong>Espérance de vie :</strong> ${selected.life} ans</li>
+        <li><strong>Niveau d'éducation :</strong> ${selected.education}</li>
+        <li><strong>Accès aux soins :</strong> ${selected.health}</li>
+        <li><strong>Liberté individuelle :</strong> ${selected.freedom}</li>
+        <li><strong>Perspectives économiques :</strong> ${selected.economy}</li>
+        <li><strong>Nombre moyen de frères et sœurs :</strong> ${Math.round(selected.fertility - 1)}</li>
+        <li><strong>Nutrition :</strong> ${selected.nutrition}</li>
+      </ul>
+    `;
+  }
+</script>
+
 </body>
 </html>
