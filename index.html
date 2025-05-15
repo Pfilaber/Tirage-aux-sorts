@@ -52,16 +52,11 @@
   <script>
     let pays = [];
 
-    fetch('full_birth_data_2023_fr.json')
-      .then(response => response.json())
-      .then(data => {
-        pays = data;
-        document.getElementById("result").innerText = "Prêt ! Cliquez sur le bouton ci-dessus.";
-      })
-      .catch(error => {
-        document.getElementById("result").innerText = "Échec du chargement des données.";
-        console.error("Erreur de chargement JSON :", error);
-      });
+    fetch("full_birth_data_2023_fr.json")
+  .then(response => response.json())
+  .then(data => {
+    countries = data.filter(country => country.name !== undefined && country.name <= "Tchad");
+  });
 
     function tirerPays() {
       if (!pays.length) {
