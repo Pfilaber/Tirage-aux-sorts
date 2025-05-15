@@ -78,10 +78,6 @@
     document.getElementById("result").innerHTML = "Erreur : " + error.message;
   });
 
-      .then(response => response.json())
-      .then(data => {
-        pays = data;
-      });
 
     function tirerPays() {
       if (pays.length === 0) {
