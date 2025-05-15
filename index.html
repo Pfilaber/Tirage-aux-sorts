@@ -55,7 +55,7 @@
   <div class="card">
     <h1>🌍 Loterie de Naissance</h1>
     <p>Cliquez sur le bouton pour découvrir dans quel pays vous seriez né selon les probabilités mondiales de naissance.</p>
-    <button onclick="tirerPays()">🎲 Tirer au sort</button>
+   <button onclick="simulateLottery()">🎲 Tirer au sort</button>
     <div id="result"></div>
   </div>
 
@@ -79,7 +79,7 @@
   });
 
 
-    function tirerPays() {
+    function simulateLottery() {
       if (pays.length === 0) {
         document.getElementById("result").innerHTML = "Les données ne sont pas encore chargées. Réessayez dans un instant.";
         return;
